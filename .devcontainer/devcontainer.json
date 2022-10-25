@@ -1,0 +1,8 @@
+{
+  "dockerComposeFile": "../docker-compose.yaml",
+  "service": "workspace",
+  "workspaceFolder": "/go/src/github.com/mkaiho/go-aws-sandbox",
+  "extensions": [
+    "golang.go"
+  ]
+}

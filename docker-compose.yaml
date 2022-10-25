@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  workspace:
+    build:
+      context: .
+      dockerfile: ./docker/workspace/Dockerfile
+    container_name: go-aws-sandbox-workspace
+    tty: true
+    volumes:
+      - .:/go/src/github.com/mkaiho/go-aws-sandbox
+      - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /go/src/github.com/mkaiho/go-aws-sandbox
+    ports:
+      - 3000:3000
