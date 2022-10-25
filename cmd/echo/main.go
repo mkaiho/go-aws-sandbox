@@ -1,11 +1,16 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"strings"
+
+	"github.com/mkaiho/go-aws-sandbox/logging"
 )
 
+func init() {
+	logging.InitLoggerWithZap()
+}
+
 func main() {
-	fmt.Println(strings.Join(os.Args[1:], " "))
+	logging.GetLogger().Info(strings.Join(os.Args[1:], " "))
 }
