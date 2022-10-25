@@ -17,3 +17,6 @@
 .ssh/
 
 .envrc
+
+_deployments/bin/
+_deployments/zip/
