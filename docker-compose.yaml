@@ -6,6 +6,7 @@ x-mysql-host: &MYSQL_HOST mysqldb
 x-mysql-port: &MYSQL_PORT 3306
 x-mysql-user: &MYSQL_USER devuser
 x-mysql-password: &MYSQL_PASSWORD devdev
+x-mysql-max-conns: &MYSQL_MAX_CONNS 10
 
 services:
   workspace:
@@ -26,6 +27,7 @@ services:
       MYSQL_USER: *MYSQL_USER
       MYSQL_DATABASE: *MYSQL_DATABASE
       MYSQL_PASSWORD: *MYSQL_PASSWORD
+      MAX_CONNS: *MYSQL_MAX_CONNS
   mysqldb:
     build:
       context: ./docker/mysql
