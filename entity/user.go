@@ -2,6 +2,10 @@ package entity
 
 type UserID string
 
+func (i UserID) String() string {
+	return string(i)
+}
+
 func NewUser(
 	id UserID,
 	name string,
@@ -31,3 +35,5 @@ func (u *User) Name() string {
 func (u *User) Email() string {
 	return u.email
 }
+
+type Users []*User
