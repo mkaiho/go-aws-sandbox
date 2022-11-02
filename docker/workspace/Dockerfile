@@ -1,7 +1,10 @@
 FROM debian:bullseye
 
-ARG GO_VERSION=1.19.2
-ARG NODE_VERSION=16.18.0
+SHELL ["/bin/bash", "-c"]
+
+ARG ASDF_VERSION=v0.10.2
+ARG GO_VERSION=1.19.3
+ARG NODE_VERSION=18.12.0
 ARG SRC_MODULE=github.com/mkaiho/go-aws-sandbox
 
 RUN apt-get update -y && apt-get install -y \
@@ -27,17 +30,12 @@ RUN chsh -s /bin/bash
 
 WORKDIR /go/src/$SRC_MODULE
 
-RUN git clone https://github.com/anyenv/anyenv ~/.anyenv \
-  && echo 'export PATH="$HOME/.anyenv/bin:$PATH"' >> ~/.bash_profile \
-  && echo 'eval "$(anyenv init -)"' >> ~/.bash_profile \
-  && . ~/.bash_profile \
-  && echo y | anyenv install --init \
-  && anyenv install nodenv \
-  && anyenv install goenv \
-  && . ~/.bash_profile \
-  && nodenv install $NODE_VERSION \
-  && nodenv global $NODE_VERSION \
-  && npm install -g aws-cdk aws-cdk-local \
-  && goenv install $GO_VERSION \
-  && goenv global $GO_VERSION \
-  && echo 'alias aws-local="aws --endpoint http://localstack:4566"' >> ~/.bashrc
+RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch ${ASDF_VERSION} \
+  && echo '. ~/.asdf/asdf.sh' >> ~/.bash_profile \
+  && echo '. ~/.asdf/completions/asdf.bash' >> ~/.bash_profile \
+  && . ~/.asdf/asdf.sh \
+  && . ~/.asdf/completions/asdf.bash \
+  && asdf plugin-add golang https://github.com/kennyp/asdf-golang.git \
+  && asdf plugin add nodejs \
+  && asdf install golang ${GO_VERSION} \
+  && asdf install nodejs ${NODE_VERSION}
