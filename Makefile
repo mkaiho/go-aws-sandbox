@@ -20,10 +20,15 @@ $(ARCHIVES):$(BINARIES)
 	@test -d $(ARCHIVE_DIR)/cmd || mkdir $(ARCHIVE_DIR)/cmd
 	@zip -j $@.zip $(@:$(ARCHIVE_DIR)/%=$(BIN_DIR)/%)
 
+.PHONY: reshim
+reshim:
+	asdf reshim golang
+
 .PHONY: dev-deps
 dev-deps:
 	go install gotest.tools/gotestsum@v1.7.0
 	go install github.com/vektra/mockery/v2@latest
+	@make reshim
 
 .PHONY: deps
 deps:
