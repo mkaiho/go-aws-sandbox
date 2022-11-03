@@ -32,7 +32,7 @@ services:
     build:
       context: ./docker/mysql
       dockerfile: ./Dockerfile
-    container_name: go-oauth-sandbox-db
+    container_name: go-aws-sandbox-db
     ports:
       - 13306:3306
     volumes:
