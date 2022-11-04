@@ -7,42 +7,42 @@ import (
 )
 
 type (
-	UsersListInput struct {
+	UserListInput struct {
 		Limit *uint
 	}
-	UsersListOutput struct {
-		Users entity.Users
-	}
-
-	UsersFindByIDInput struct {
-		ID entity.UserID
-	}
-	UsersFindByIDOutput struct {
+	UserListOutput struct {
 		User entity.User
 	}
 
-	UsersCreateInput struct {
+	UserFindByIDInput struct {
+		ID entity.UserID
+	}
+	UserFindByIDOutput struct {
+		User entity.User
+	}
+
+	UserCreateInput struct {
 		ID    entity.UserID
 		Name  string
 		Email string
 	}
-	UsersCreateOutput struct {
+	UserCreateOutput struct {
 		CreatedUser entity.User
 	}
 
-	UsersDeleteByIDInput struct {
+	UserDeleteByIDInput struct {
 		ID entity.UserID
 	}
-	UsersDeleteByIDOutput struct {
+	UserDeleteByIDOutput struct {
 		User entity.User
 	}
 )
 
-type Users interface {
+type UserRepository interface {
 	GenerateID() entity.UserID
 	ParseID() entity.UserID
-	List(ctx context.Context, input UsersListInput) (*UsersListOutput, error)
-	FindByID(ctx context.Context, input UsersFindByIDInput) (*UsersFindByIDOutput, error)
-	Create(ctx context.Context, input UsersCreateInput) (*UsersCreateOutput, error)
-	DeleteByID(ctx context.Context, input UsersDeleteByIDInput) (*UsersDeleteByIDOutput, error)
+	List(ctx context.Context, input UserListInput) (*UserListOutput, error)
+	FindByID(ctx context.Context, input UserFindByIDInput) (*UserFindByIDOutput, error)
+	Create(ctx context.Context, input UserCreateInput) (*UserCreateOutput, error)
+	DeleteByID(ctx context.Context, input UserDeleteByIDInput) (*UserDeleteByIDOutput, error)
 }
