@@ -22,7 +22,6 @@ type (
 	}
 
 	UserCreateInput struct {
-		ID    entity.UserID
 		Name  string
 		Email string
 	}
@@ -40,7 +39,7 @@ type (
 
 type UserRepository interface {
 	GenerateID() entity.UserID
-	ParseID() entity.UserID
+	ParseID(v string) entity.UserID
 	List(ctx context.Context, input UserListInput) (*UserListOutput, error)
 	FindByID(ctx context.Context, input UserFindByIDInput) (*UserFindByIDOutput, error)
 	Create(ctx context.Context, input UserCreateInput) (*UserCreateOutput, error)
