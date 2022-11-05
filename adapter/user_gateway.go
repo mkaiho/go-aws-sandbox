@@ -66,16 +66,16 @@ func (g *UserGateway) List(ctx context.Context, input port.UserListInput) (*port
 	}
 
 	users := make([]*port.User, len(rows))
-	for _, row := range rows {
+	for i, row := range rows {
 		id, err := g.userIDManager.Parse(row.ID)
 		if err != nil {
 			return nil, err
 		}
-		users = append(users, &port.User{
+		users[i] = &port.User{
 			ID:    id,
 			Name:  row.Name,
 			Email: row.Email,
-		})
+		}
 	}
 
 	return &port.UserListOutput{
