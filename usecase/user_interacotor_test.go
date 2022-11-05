@@ -71,7 +71,7 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 			assertion: assert.NoError,
 		},
 		{
-			name: "error returned when user exists",
+			name: "error is returned when user exists",
 			mocks: mocks{
 				userFindByEmailMockResult: userFindByEmailMockResult{
 					output: &port.UserFindByEmailOutput{
@@ -101,7 +101,28 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 			},
 		},
 		{
-			name: "error returned when user cannot be created",
+			name: "error is returned when failed to get user by email",
+			mocks: mocks{
+				userFindByEmailMockResult: userFindByEmailMockResult{
+					output: nil,
+					err:    errors.New("failed to get user by email"),
+				},
+			},
+			args: args{
+				ctx: context.Background(),
+				input: UserRegisterInput{
+					Name:  registerdUser.Name,
+					Email: registerdUser.Email,
+				},
+			},
+			want: nil,
+			assertion: func(tt assert.TestingT, err error, i ...interface{}) bool {
+				wantErr := errors.New("failed to get user by email")
+				return assert.EqualError(t, err, wantErr.Error(), "userInteractorImpl.Register() error = %v, wantErr %v", err, wantErr)
+			},
+		},
+		{
+			name: "error is returned when failed to create user",
 			mocks: mocks{
 				userFindByEmailMockResult: userFindByEmailMockResult{
 					output: nil,
@@ -119,8 +140,11 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 					Email: registerdUser.Email,
 				},
 			},
-			want:      nil,
-			assertion: assert.Error,
+			want: nil,
+			assertion: func(tt assert.TestingT, err error, i ...interface{}) bool {
+				wantErr := errors.New("failed to create user")
+				return assert.EqualError(t, err, wantErr.Error(), "userInteractorImpl.Register() error = %v, wantErr %v", err, wantErr)
+			},
 		},
 	}
 	for _, tt := range tests {
