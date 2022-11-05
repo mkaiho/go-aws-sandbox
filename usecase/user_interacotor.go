@@ -15,8 +15,9 @@ var (
 
 var _ UserInteractor = (*userInteractorImpl)(nil)
 
-func NewUserInteractor(userRepository port.UserRepository) *userInteractorImpl {
+func NewUserInteractor(userIDManager port.UserIDManager, userRepository port.UserRepository) *userInteractorImpl {
 	return &userInteractorImpl{
+		userIDManager:  userIDManager,
 		userRepository: userRepository,
 	}
 }
