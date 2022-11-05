@@ -109,7 +109,7 @@ func (_m *UserRepository) FindByID(ctx context.Context, input port.UserFindByIDI
 }
 
 // GenerateID provides a mock function with given fields:
-func (_m *UserRepository) GenerateID() entity.UserID {
+func (_m *UserRepository) GenerateID() (entity.UserID, error) {
 	ret := _m.Called()
 
 	var r0 entity.UserID
@@ -119,7 +119,14 @@ func (_m *UserRepository) GenerateID() entity.UserID {
 		r0 = ret.Get(0).(entity.UserID)
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // List provides a mock function with given fields: ctx, input
@@ -146,7 +153,7 @@ func (_m *UserRepository) List(ctx context.Context, input port.UserListInput) (*
 }
 
 // ParseID provides a mock function with given fields: v
-func (_m *UserRepository) ParseID(v string) entity.UserID {
+func (_m *UserRepository) ParseID(v string) (entity.UserID, error) {
 	ret := _m.Called(v)
 
 	var r0 entity.UserID
@@ -156,7 +163,14 @@ func (_m *UserRepository) ParseID(v string) entity.UserID {
 		r0 = ret.Get(0).(entity.UserID)
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(v)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 type mockConstructorTestingTNewUserRepository interface {

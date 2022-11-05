@@ -51,8 +51,8 @@ type (
 )
 
 type UserRepository interface {
-	GenerateID() entity.UserID
-	ParseID(v string) entity.UserID
+	GenerateID() (entity.UserID, error)
+	ParseID(v string) (entity.UserID, error)
 	List(ctx context.Context, input UserListInput) (*UserListOutput, error)
 	FindByID(ctx context.Context, input UserFindByIDInput) (*UserFindByIDOutput, error)
 	FindByEmail(ctx context.Context, input UserFindByEmailInput) (*UserFindByEmailOutput, error)
