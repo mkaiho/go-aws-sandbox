@@ -15,6 +15,14 @@ func NewNotFoundError(targetName string) *NotFoundEntityError {
 	}
 }
 
+func (e *NotFoundEntityError) TargetName() string {
+	if e == nil {
+		return ""
+	}
+
+	return e.targetName
+}
+
 func (e *NotFoundEntityError) Error() string {
 	return fmt.Sprintf("not found: %s", e.targetName)
 }
@@ -32,4 +40,12 @@ func NewDuplicateError(targetName string) *DuplicateError {
 
 func (e *DuplicateError) Error() string {
 	return fmt.Sprintf("already exists: %s", e.targetName)
+}
+
+func (e *DuplicateError) TargetName() string {
+	if e == nil {
+		return ""
+	}
+
+	return e.targetName
 }
