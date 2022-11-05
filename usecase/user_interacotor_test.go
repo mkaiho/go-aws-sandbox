@@ -18,7 +18,7 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		Name:  "test_user_name",
 		Email: "test@xxx.com",
 	}
-	type userGenerateIDMock struct {
+	type userIDGenerateMock struct {
 		ID  entity.UserID
 		err error
 	}
@@ -31,7 +31,7 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		err    error
 	}
 	type mocks struct {
-		userGenerateIDMock        userGenerateIDMock
+		userIDGenerateMock        userIDGenerateMock
 		userFindByEmailMockResult userFindByEmailMockResult
 		userCreateMockResult      userCreateMockResult
 	}
@@ -49,7 +49,7 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		{
 			name: "user is registered and returned when no duplicate user exists",
 			mocks: mocks{
-				userGenerateIDMock: userGenerateIDMock{
+				userIDGenerateMock: userIDGenerateMock{
 					ID:  registerdUser.ID,
 					err: nil,
 				},
@@ -83,7 +83,7 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		{
 			name: "error is returned when user exists",
 			mocks: mocks{
-				userGenerateIDMock: userGenerateIDMock{
+				userIDGenerateMock: userIDGenerateMock{
 					ID:  registerdUser.ID,
 					err: nil,
 				},
@@ -117,7 +117,7 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		{
 			name: "error is returned when failed to get user by email",
 			mocks: mocks{
-				userGenerateIDMock: userGenerateIDMock{
+				userIDGenerateMock: userIDGenerateMock{
 					ID:  registerdUser.ID,
 					err: nil,
 				},
@@ -142,7 +142,7 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		{
 			name: "error is returned when failed to generate user id",
 			mocks: mocks{
-				userGenerateIDMock: userGenerateIDMock{
+				userIDGenerateMock: userIDGenerateMock{
 					ID:  registerdUser.ID,
 					err: errors.New("failed to generate id"),
 				},
@@ -167,7 +167,7 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		{
 			name: "error is returned when failed to create user",
 			mocks: mocks{
-				userGenerateIDMock: userGenerateIDMock{
+				userIDGenerateMock: userIDGenerateMock{
 					ID:  registerdUser.ID,
 					err: nil,
 				},
@@ -196,10 +196,11 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			userRepository := new(portmocks.UserRepository)
-			userRepository.
+			userIDManager := new(portmocks.UserIDManager)
+			userIDManager.
 				On("GenerateID").
-				Return(tt.mocks.userGenerateIDMock.ID, tt.mocks.userGenerateIDMock.err)
+				Return(tt.mocks.userIDGenerateMock.ID, tt.mocks.userIDGenerateMock.err)
+			userRepository := new(portmocks.UserRepository)
 			userRepository.
 				On("FindByEmail", mock.Anything, port.UserFindByEmailInput{
 					Email: tt.args.input.Email,
@@ -207,12 +208,13 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 				Return(tt.mocks.userFindByEmailMockResult.output, tt.mocks.userFindByEmailMockResult.err)
 			userRepository.
 				On("Create", mock.Anything, port.UserCreateInput{
-					ID:    tt.mocks.userGenerateIDMock.ID,
+					ID:    tt.mocks.userIDGenerateMock.ID,
 					Name:  tt.args.input.Name,
 					Email: tt.args.input.Email,
 				}).
 				Return(tt.mocks.userCreateMockResult.output, tt.mocks.userCreateMockResult.err)
 			u := &userInteractorImpl{
+				userIDManager:  userIDManager,
 				userRepository: userRepository,
 			}
 			got, err := u.Register(tt.args.ctx, tt.args.input)

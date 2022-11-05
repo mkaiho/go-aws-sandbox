@@ -41,6 +41,7 @@ type (
 )
 
 type userInteractorImpl struct {
+	userIDManager  port.UserIDManager
 	userRepository port.UserRepository
 }
 
@@ -58,7 +59,7 @@ func (u *userInteractorImpl) Register(ctx context.Context, input UserRegisterInp
 		return nil, ErrDuplicateUser
 	}
 
-	id, err := u.userRepository.GenerateID()
+	id, err := u.userIDManager.GenerateID()
 	if err != nil {
 		return nil, err
 	}
