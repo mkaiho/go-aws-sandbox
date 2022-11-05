@@ -7,18 +7,31 @@ import (
 )
 
 type (
+	User struct {
+		ID    entity.UserID
+		Name  string
+		Email string
+	}
+
 	UserListInput struct {
 		Limit *uint
 	}
 	UserListOutput struct {
-		User entity.User
+		Users []*User
 	}
 
 	UserFindByIDInput struct {
 		ID entity.UserID
 	}
 	UserFindByIDOutput struct {
-		User entity.User
+		User *User
+	}
+
+	UserFindByEmailInput struct {
+		Email string
+	}
+	UserFindByEmailOutput struct {
+		User *User
 	}
 
 	UserCreateInput struct {
@@ -26,14 +39,14 @@ type (
 		Email string
 	}
 	UserCreateOutput struct {
-		CreatedUser entity.User
+		CreatedUser *User
 	}
 
 	UserDeleteByIDInput struct {
 		ID entity.UserID
 	}
 	UserDeleteByIDOutput struct {
-		User entity.User
+		User *User
 	}
 )
 
@@ -42,6 +55,7 @@ type UserRepository interface {
 	ParseID(v string) entity.UserID
 	List(ctx context.Context, input UserListInput) (*UserListOutput, error)
 	FindByID(ctx context.Context, input UserFindByIDInput) (*UserFindByIDOutput, error)
+	FindByEmail(ctx context.Context, input UserFindByEmailInput) (*UserFindByEmailOutput, error)
 	Create(ctx context.Context, input UserCreateInput) (*UserCreateOutput, error)
 	DeleteByID(ctx context.Context, input UserDeleteByIDInput) (*UserDeleteByIDOutput, error)
 }

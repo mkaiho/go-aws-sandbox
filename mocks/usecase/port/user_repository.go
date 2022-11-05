@@ -62,6 +62,29 @@ func (_m *UserRepository) DeleteByID(ctx context.Context, input port.UserDeleteB
 	return r0, r1
 }
 
+// FindByEmail provides a mock function with given fields: ctx, input
+func (_m *UserRepository) FindByEmail(ctx context.Context, input port.UserFindByEmailInput) (*port.UserFindByEmailOutput, error) {
+	ret := _m.Called(ctx, input)
+
+	var r0 *port.UserFindByEmailOutput
+	if rf, ok := ret.Get(0).(func(context.Context, port.UserFindByEmailInput) *port.UserFindByEmailOutput); ok {
+		r0 = rf(ctx, input)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*port.UserFindByEmailOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, port.UserFindByEmailInput) error); ok {
+		r1 = rf(ctx, input)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindByID provides a mock function with given fields: ctx, input
 func (_m *UserRepository) FindByID(ctx context.Context, input port.UserFindByIDInput) (*port.UserFindByIDOutput, error) {
 	ret := _m.Called(ctx, input)
