@@ -12,8 +12,8 @@ type UserIDManager struct {
 	mock.Mock
 }
 
-// GenerateID provides a mock function with given fields:
-func (_m *UserIDManager) GenerateID() (entity.UserID, error) {
+// Generate provides a mock function with given fields:
+func (_m *UserIDManager) Generate() (entity.UserID, error) {
 	ret := _m.Called()
 
 	var r0 entity.UserID
@@ -33,8 +33,8 @@ func (_m *UserIDManager) GenerateID() (entity.UserID, error) {
 	return r0, r1
 }
 
-// ParseID provides a mock function with given fields: v
-func (_m *UserIDManager) ParseID(v string) (entity.UserID, error) {
+// Parse provides a mock function with given fields: v
+func (_m *UserIDManager) Parse(v string) (entity.UserID, error) {
 	ret := _m.Called(v)
 
 	var r0 entity.UserID

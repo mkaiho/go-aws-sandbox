@@ -52,8 +52,8 @@ type (
 )
 
 type UserIDManager interface {
-	GenerateID() (entity.UserID, error)
-	ParseID(v string) (entity.UserID, error)
+	Generate() (entity.UserID, error)
+	Parse(v string) (entity.UserID, error)
 }
 
 type UserRepository interface {

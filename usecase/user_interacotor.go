@@ -59,7 +59,7 @@ func (u *userInteractorImpl) Register(ctx context.Context, input UserRegisterInp
 		return nil, ErrDuplicateUser
 	}
 
-	id, err := u.userIDManager.GenerateID()
+	id, err := u.userIDManager.Generate()
 	if err != nil {
 		return nil, err
 	}

@@ -198,7 +198,7 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			userIDManager := new(portmocks.UserIDManager)
 			userIDManager.
-				On("GenerateID").
+				On("Generate").
 				Return(tt.mocks.userIDGenerateMock.ID, tt.mocks.userIDGenerateMock.err)
 			userRepository := new(portmocks.UserRepository)
 			userRepository.
