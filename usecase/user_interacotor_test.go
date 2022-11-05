@@ -140,6 +140,31 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 			},
 		},
 		{
+			name: "error is returned when failed to generate user id",
+			mocks: mocks{
+				userGenerateIDMock: userGenerateIDMock{
+					ID:  registerdUser.ID,
+					err: errors.New("failed to generate id"),
+				},
+				userFindByEmailMockResult: userFindByEmailMockResult{
+					output: nil,
+					err:    ErrNotFoundUser,
+				},
+			},
+			args: args{
+				ctx: context.Background(),
+				input: UserRegisterInput{
+					Name:  registerdUser.Name,
+					Email: registerdUser.Email,
+				},
+			},
+			want: nil,
+			assertion: func(tt assert.TestingT, err error, i ...interface{}) bool {
+				wantErr := errors.New("failed to generate id")
+				return assert.EqualError(t, err, wantErr.Error(), "userInteractorImpl.Register() error = %v, wantErr %v", err, wantErr)
+			},
+		},
+		{
 			name: "error is returned when failed to create user",
 			mocks: mocks{
 				userGenerateIDMock: userGenerateIDMock{
