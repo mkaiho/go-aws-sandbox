@@ -35,6 +35,7 @@ type (
 	}
 
 	UserCreateInput struct {
+		ID    entity.UserID
 		Name  string
 		Email string
 	}

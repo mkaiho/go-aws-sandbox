@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/mkaiho/go-aws-sandbox/entity"
 	portmocks "github.com/mkaiho/go-aws-sandbox/mocks/usecase/port"
 	"github.com/mkaiho/go-aws-sandbox/usecase/port"
 	"github.com/stretchr/testify/assert"
@@ -17,6 +18,10 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		Name:  "test_user_name",
 		Email: "test@xxx.com",
 	}
+	type userGenerateIDMock struct {
+		ID  entity.UserID
+		err error
+	}
 	type userFindByEmailMockResult struct {
 		output *port.UserFindByEmailOutput
 		err    error
@@ -26,6 +31,7 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		err    error
 	}
 	type mocks struct {
+		userGenerateIDMock        userGenerateIDMock
 		userFindByEmailMockResult userFindByEmailMockResult
 		userCreateMockResult      userCreateMockResult
 	}
@@ -43,6 +49,10 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		{
 			name: "user is registered and returned when no duplicate user exists",
 			mocks: mocks{
+				userGenerateIDMock: userGenerateIDMock{
+					ID:  registerdUser.ID,
+					err: nil,
+				},
 				userFindByEmailMockResult: userFindByEmailMockResult{
 					output: nil,
 					err:    ErrNotFoundUser,
@@ -73,6 +83,10 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		{
 			name: "error is returned when user exists",
 			mocks: mocks{
+				userGenerateIDMock: userGenerateIDMock{
+					ID:  registerdUser.ID,
+					err: nil,
+				},
 				userFindByEmailMockResult: userFindByEmailMockResult{
 					output: &port.UserFindByEmailOutput{
 						User: &port.User{
@@ -103,6 +117,10 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		{
 			name: "error is returned when failed to get user by email",
 			mocks: mocks{
+				userGenerateIDMock: userGenerateIDMock{
+					ID:  registerdUser.ID,
+					err: nil,
+				},
 				userFindByEmailMockResult: userFindByEmailMockResult{
 					output: nil,
 					err:    errors.New("failed to get user by email"),
@@ -124,6 +142,10 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		{
 			name: "error is returned when failed to create user",
 			mocks: mocks{
+				userGenerateIDMock: userGenerateIDMock{
+					ID:  registerdUser.ID,
+					err: nil,
+				},
 				userFindByEmailMockResult: userFindByEmailMockResult{
 					output: nil,
 					err:    ErrNotFoundUser,
@@ -151,12 +173,16 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			userRepository := new(portmocks.UserRepository)
 			userRepository.
+				On("GenerateID").
+				Return(tt.mocks.userGenerateIDMock.ID, tt.mocks.userGenerateIDMock.err)
+			userRepository.
 				On("FindByEmail", mock.Anything, port.UserFindByEmailInput{
 					Email: tt.args.input.Email,
 				}).
 				Return(tt.mocks.userFindByEmailMockResult.output, tt.mocks.userFindByEmailMockResult.err)
 			userRepository.
 				On("Create", mock.Anything, port.UserCreateInput{
+					ID:    tt.mocks.userGenerateIDMock.ID,
 					Name:  tt.args.input.Name,
 					Email: tt.args.input.Email,
 				}).

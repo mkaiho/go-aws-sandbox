@@ -58,7 +58,12 @@ func (u *userInteractorImpl) Register(ctx context.Context, input UserRegisterInp
 		return nil, ErrDuplicateUser
 	}
 
+	id, err := u.userRepository.GenerateID()
+	if err != nil {
+		return nil, err
+	}
 	createdUserOutput, err := u.userRepository.Create(ctx, port.UserCreateInput{
+		ID:    id,
 		Name:  input.Name,
 		Email: input.Email,
 	})
