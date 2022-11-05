@@ -48,8 +48,7 @@ test:
 test-report:
 	@rm -rf ./test-results
 	@mkdir -p ./test-results
-	# gotestsum --junitfile ./test-results/unit-tests.xml ./entity/... ./usecase/... ./adapter/... ./infrastructure/...
-	gotestsum --junitfile ./test-results/unit-tests.xml ./...
+	gotestsum --junitfile ./test-results/unit-tests.xml -- -coverprofile=cover.out ./...
 
 .PHONY: clean
 clean:
