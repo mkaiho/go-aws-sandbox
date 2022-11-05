@@ -9,6 +9,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/mkaiho/go-ecs-batch-sample v0.0.0-20221008022324-dc0757a46aeb
+	github.com/oklog/ulid/v2 v2.1.0
 	github.com/spf13/cobra v1.6.1
 	github.com/stretchr/testify v1.8.0
 	go.uber.org/zap v1.23.0
