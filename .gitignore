@@ -21,4 +21,6 @@
 _deployments/bin/
 _deployments/zip/
 
+test-results/
+
 docker/mysql/data/
