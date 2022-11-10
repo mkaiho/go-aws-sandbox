@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/jmoiron/sqlx"
 	"github.com/mkaiho/go-aws-sandbox/adapter/id"
 	"github.com/mkaiho/go-aws-sandbox/adapter/rdb"
 	"github.com/mkaiho/go-aws-sandbox/entity"
@@ -52,7 +51,7 @@ type UserGateway struct {
 	rdbUserDataAccess *rdb.UserDataAccess
 }
 
-func NewUserGateway(userIDManager *UserIDManager, tx *sqlx.Tx) *UserGateway {
+func NewUserGateway(userIDManager *UserIDManager, tx rdb.Transaction) *UserGateway {
 	return &UserGateway{
 		userIDManager:     *userIDManager,
 		rdbUserDataAccess: rdb.NewUserDataAccess(tx),
