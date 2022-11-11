@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func Test_userInteractorImpl_Register(t *testing.T) {
+func Test_userInteractorImpl_Execute(t *testing.T) {
 	registerdUser := UserDetail{
 		ID:    "test_user_id",
 		Name:  "test_user_name",
