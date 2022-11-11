@@ -11,6 +11,14 @@
                 "hello",
                 "world"
             ]
-        }
+        },
+        {
+            "name": "user-server-example",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/user-server-example/main.go",
+            "args": []
+        },
     ]
 }
