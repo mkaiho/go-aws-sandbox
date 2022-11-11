@@ -51,15 +51,19 @@ type UserGateway struct {
 	rdbUserDataAccess *rdb.UserDataAccess
 }
 
-func NewUserGateway(userIDManager *UserIDManager, tx rdb.Transaction) *UserGateway {
+func NewUserGateway(userIDManager *UserIDManager) *UserGateway {
 	return &UserGateway{
 		userIDManager:     *userIDManager,
-		rdbUserDataAccess: rdb.NewUserDataAccess(tx),
+		rdbUserDataAccess: rdb.NewUserDataAccess(),
 	}
 }
 
 func (g *UserGateway) List(ctx context.Context, input port.UserListInput) (*port.UserListOutput, error) {
-	rows, err := g.rdbUserDataAccess.List(ctx, input.Limit)
+	tx, err := rdb.TxFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	rows, err := g.rdbUserDataAccess.List(ctx, tx, input.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +87,11 @@ func (g *UserGateway) List(ctx context.Context, input port.UserListInput) (*port
 }
 
 func (g *UserGateway) FindByID(ctx context.Context, input port.UserFindByIDInput) (*port.UserFindByIDOutput, error) {
-	row, err := g.rdbUserDataAccess.GetByID(ctx, input.ID)
+	tx, err := rdb.TxFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	row, err := g.rdbUserDataAccess.GetByID(ctx, tx, input.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, usecase.ErrNotFoundUser
@@ -104,7 +112,12 @@ func (g *UserGateway) FindByID(ctx context.Context, input port.UserFindByIDInput
 }
 
 func (g *UserGateway) FindByEmail(ctx context.Context, input port.UserFindByEmailInput) (*port.UserFindByEmailOutput, error) {
-	row, err := g.rdbUserDataAccess.GetByEmail(ctx, input.Email)
+	tx, err := rdb.TxFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	row, err := g.rdbUserDataAccess.GetByEmail(ctx, tx, input.Email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, usecase.ErrNotFoundUser
@@ -125,6 +138,11 @@ func (g *UserGateway) FindByEmail(ctx context.Context, input port.UserFindByEmai
 }
 
 func (g *UserGateway) Create(ctx context.Context, input port.UserCreateInput) (*port.UserCreateOutput, error) {
+	tx, err := rdb.TxFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	id, err := g.userIDManager.Generate()
 	if err != nil {
 		return nil, err
@@ -135,7 +153,7 @@ func (g *UserGateway) Create(ctx context.Context, input port.UserCreateInput) (*
 		Name:  input.Name,
 		Email: input.Email,
 	}
-	if err := g.rdbUserDataAccess.Create(ctx, &row); err != nil {
+	if err := g.rdbUserDataAccess.Create(ctx, tx, &row); err != nil {
 		return nil, err
 	}
 
@@ -149,7 +167,12 @@ func (g *UserGateway) Create(ctx context.Context, input port.UserCreateInput) (*
 }
 
 func (g *UserGateway) DeleteByID(ctx context.Context, input port.UserDeleteByIDInput) (*port.UserDeleteByIDOutput, error) {
-	row, err := g.rdbUserDataAccess.GetByID(ctx, input.ID)
+	tx, err := rdb.TxFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	row, err := g.rdbUserDataAccess.GetByID(ctx, tx, input.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, usecase.ErrNotFoundUser
@@ -160,7 +183,7 @@ func (g *UserGateway) DeleteByID(ctx context.Context, input port.UserDeleteByIDI
 	if err != nil {
 		return nil, err
 	}
-	if err := g.rdbUserDataAccess.DeleteByID(ctx, id); err != nil {
+	if err := g.rdbUserDataAccess.DeleteByID(ctx, tx, id); err != nil {
 		return nil, err
 	}
 

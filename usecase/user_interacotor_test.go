@@ -213,11 +213,11 @@ func Test_userInteractorImpl_Register(t *testing.T) {
 					Email: tt.args.input.Email,
 				}).
 				Return(tt.mocks.userCreateMockResult.output, tt.mocks.userCreateMockResult.err)
-			u := &userInteractorImpl{
+			u := &RegisterUserInteractorImpl{
 				userIDManager:  userIDManager,
 				userRepository: userRepository,
 			}
-			got, err := u.Register(tt.args.ctx, tt.args.input)
+			got, err := u.Execute(tt.args.ctx, tt.args.input)
 			if !tt.assertion(t, err) {
 				return
 			}
