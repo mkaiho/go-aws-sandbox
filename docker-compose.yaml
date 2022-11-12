@@ -7,6 +7,9 @@ x-mysql-port: &MYSQL_PORT 3306
 x-mysql-user: &MYSQL_USER devuser
 x-mysql-password: &MYSQL_PASSWORD devdev
 x-mysql-max-conns: &MYSQL_MAX_CONNS 10
+# Variables for redis
+x-redis-master-name: &REDIS_MASTER_NAME mymaster
+x-redis-sentinel-addrs: &REDIS_SENTINEL_ADDRS redis-sentinel:26379
 
 services:
   workspace:
@@ -28,6 +31,8 @@ services:
       MYSQL_DATABASE: *MYSQL_DATABASE
       MYSQL_PASSWORD: *MYSQL_PASSWORD
       MAX_CONNS: *MYSQL_MAX_CONNS
+      REDIS_MASTER_NAME: *REDIS_MASTER_NAME
+      REDIS_SENTINEL_ADDRS: *REDIS_SENTINEL_ADDRS
   mysqldb:
     build:
       context: ./docker/mysql
@@ -44,3 +49,25 @@ services:
       MYSQL_DATABASE: *MYSQL_DATABASE
       MYSQL_USER: *MYSQL_USER
       MYSQL_PASSWORD: *MYSQL_PASSWORD
+  redis-master:
+    image: redis:7.0-bullseye
+    container_name: go-aws-sandbox-redis-master
+    ports:
+      - 16379:6379
+    volumes:
+      - ./docker/redis/master/data:/data
+  redis-slave-01:
+    image: redis:7.0-bullseye
+    container_name: go-aws-sandbox-redis-slave-01
+    ports:
+      - 16380:6379
+    volumes:
+      - ./docker/redis/slave-01/data:/data
+    command: redis-server --slaveof redis-master 6379
+  redis-sentinel:
+    build:
+      context: ./docker/redis/sentinel
+      dockerfile: ./Dockerfile
+    container_name: go-aws-sandbox-redis-sentinel
+    ports:
+      - 26379:26379

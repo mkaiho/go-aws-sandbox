@@ -24,3 +24,4 @@ _deployments/zip/
 test-results/
 
 docker/mysql/data/
+docker/redis/*/data/
